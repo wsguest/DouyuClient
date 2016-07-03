@@ -19,7 +19,7 @@ package cc.dy.model.net
    
    public class ClientBarrage
    {
-       
+      // barrage client 
       public var _conn2:cc.dy.model.net.TcpClient;
       
       public var dispatcher:EventDispatcher;

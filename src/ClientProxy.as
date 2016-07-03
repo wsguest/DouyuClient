@@ -14,7 +14,7 @@ package cc.dy.model.net
    
    public class ClientProxy extends Proxy implements IProxy
    {
-      
+      // javascript proxy for browser 
       public static var NAME:String = "ClientProxy";
        
       private var _client:cc.dy.model.net.Client;

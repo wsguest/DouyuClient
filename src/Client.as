@@ -1,4 +1,4 @@
-package cc.dy.model.net
+﻿package cc.dy.model.net
 {
    import flash.events.EventDispatcher;
    import flash.utils.Timer;
@@ -23,7 +23,7 @@ package cc.dy.model.net
    
    public class Client
    {
-       
+      // base client to server, this is core. 
       public var _conn:cc.dy.model.net.TcpClient;
       
       public var barrage_Conn:cc.dy.model.net.ClientBarrage;
