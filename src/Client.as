@@ -2172,7 +2172,7 @@
       public function black_word(param1:String) : Boolean
       {
          var _loc3_:String = null;
-         var _loc2_:Array = new Array("风云直播","YY直播","yy直播","泽东","泽民","锦涛","恩来","大法","法轮","九评","退党","明慧","办证","我操","毛主席","近平","薄熙来","共产");
+         var _loc2_:Array = new Array("风云直播","YY直播");
          for each(_loc3_ in _loc2_)
          {
             if(param1.indexOf(_loc3_) >= 0)
