@@ -26,10 +26,10 @@ package cc.dy.model.net
        
       public var _param:Object;
       
-      public function TcpEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function TcpEvent(eventName:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
       {
          this._param = param2;
-         super(param1,param3,param4);
+         super(eventName,param3,param4);
       }
    }
 
@@ -48,21 +48,21 @@ package cc.dy.model.net
       
       private var read_bytes:ByteArray;
       
-      public function TcpClient(param1:Boolean)
+      public function TcpClient(securError:Boolean)
       {
          super();
-         this.isSecurError = param1;
+         this.isSecurError = securError;
          this.is_connected = false;
       }
       
-      public function connect(param1:String = null, param2:uint = 0, param3:int = 0) : void
+      public function connect(ip:String = null, port:uint = 0, flashPort:int = 0) : void
       {
          this.close();
-         this.currentProt = param3;
+         this.currentProt = flashPort;
          if(this.isSecurError)
          {
-            Security.loadPolicyFile("xmlsocket://" + param1 + ":" + 844);
-            $.jscall("console.log","securityChange://" + param1 + ":" + 844);
+            Security.loadPolicyFile("xmlsocket://" + ip + ":" + 844);
+           //$.jscall("console.log","securityChange://" + ip + ":" + 844);
          }
          this._socket = new Socket();
          this._socket.endian = "littleEndian";
@@ -71,7 +71,7 @@ package cc.dy.model.net
          this._socket.addEventListener(IOErrorEvent.IO_ERROR,this.ioErrorHandler);
          this._socket.addEventListener(SecurityErrorEvent.SECURITY_ERROR,this.securityErrorHandler);
          this._socket.addEventListener(ProgressEvent.SOCKET_DATA,this.socketDataHandler);
-         this._socket.connect(param1,param2);
+         this._socket.connect(ip,port);
       }
       
       public function close() : void
@@ -89,12 +89,12 @@ package cc.dy.model.net
          this.is_connected = false;
       }
       
-      public function sendmsg(param1:String) : Boolean
+      public function sendmsg(sttStringMsg:String) : Boolean
       {
          var str_byte:ByteArray = null;
          var pack_len:int = 0;
          var head_byte:ByteArray = null;
-         var str:String = param1;
+         var str:String = sttStringMsg;
          try
          {
             str_byte = new ByteArray();
@@ -155,28 +155,28 @@ package cc.dy.model.net
       
       private function closeHandler(param1:Event) : void
       {
-         $.jscall("console.log","Tcp Close [%s]",param1.toString());
+        //$.jscall("console.log","Tcp Close [%s]",param1.toString());
          this.dispatchEvent(new TcpEvent(TcpEvent.Closed,{"type":0}));
          this.close();
       }
       
       private function connectHandler(param1:Event) : void
       {
-         $.jscall("console.log","Tcp Connected [%s]",param1.toString());
+        //$.jscall("console.log","Tcp Connected [%s]",param1.toString());
          this.is_connected = true;
          this.dispatchEvent(new TcpEvent(TcpEvent.Conneted,{"type":1}));
       }
       
       private function ioErrorHandler(param1:IOErrorEvent) : void
       {
-         $.jscall("console.log","Tcp Error IO [%s]",param1.toString());
+        //$.jscall("console.log","Tcp Error IO [%s]",param1.toString());
          this.dispatchEvent(new TcpEvent(TcpEvent.Error,{"type":2}));
          this.close();
       }
       
       private function securityErrorHandler(param1:SecurityErrorEvent) : void
       {
-         $.jscall("console.log","Tcp Error Security [%s]",param1.toString());
+        //$.jscall("console.log","Tcp Error Security [%s]",param1.toString());
          this.dispatchEvent(new TcpEvent(TcpEvent.SecurityError,{
             "type":3,
             "port":this.currentProt

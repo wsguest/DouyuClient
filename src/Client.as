@@ -97,7 +97,7 @@
       public function Client()
       {
          this.dispatcher = new EventDispatcher();
-         this.users = new Vector.<RoomUser>();
+         this.users = new Vector.<RoomUser>(); // RoomUser is a class Storing user infomation
          this.admins = new Vector.<RoomUser>();
          this.users100_sort = new Vector.<RoomUser>();
          this.admins_sort = new Vector.<RoomUser>();
@@ -106,20 +106,20 @@
          super();
       }
       
-      public function ConnectServer(param1:String, param2:int, param3:int, param4:Function) : void
+      public function ConnectServer(ip:String, port:int, flashPort:int, onConnectServer:Function) : void
       {
-         $.jscall("console.log","string is [%s]","ConnectServer");
-         this._conn = new cc.dy.model.net.TcpClient(GlobalData.isSecurError1);
-         this._OnConn = param4;
+         //$.jscall("console.log","string is [%s]","ConnectServer");
+         this._conn = new cc.dy.model.net.TcpClient(GlobalData.isSecurError1); //isSecurError1 -> boolean, false
+         this._OnConn = onConnectServer;
          if(this._conn == null)
          {
             return;
          }
-         this._conn.connect(param1,param2,param3);
-         this._conn.addEventListener(TcpEvent.Conneted,param4,false,0,true);
-         this._conn.addEventListener(TcpEvent.SecurityError,param4,false,0,true);
-         this._conn.addEventListener(TcpEvent.Error,param4,false,0,true);
-         this._conn.addEventListener(TcpEvent.Closed,param4,false,0,true);
+         this._conn.connect(ip,port,flashPort);
+         this._conn.addEventListener(TcpEvent.Conneted,onConnectServer,false,0,true);
+         this._conn.addEventListener(TcpEvent.SecurityError,onConnectServer,false,0,true);
+         this._conn.addEventListener(TcpEvent.Error,onConnectServer,false,0,true);
+         this._conn.addEventListener(TcpEvent.Closed,onConnectServer,false,0,true);
          this._conn.addEventListener(TcpEvent.RecvMsg,this.ParseMsg,false,0,true);
       }
       
@@ -162,19 +162,19 @@
          _loc15_.AddItem("rt",_loc11_.time + "");
          var _loc16_:String = Util.getSecretStr(this.roomId + "&" + _loc10_ + _loc11_.time,"1");
          _loc15_.AddItem("adv",_loc16_);
-         $.asTojs("room_dycookie_set","did",_loc10_,365 * 24 * 60 * 60);
+         //$.asTojs("room_dycookie_set","did",_loc10_,365 * 24 * 60 * 60);
          loaderDanmu.danmakuSetParameters(_loc3_,_loc4_,_loc10_,_loc6_,_loc7_,_loc8_,this.roomId,_loc5_,0,GlobalData.VERSION);
          var _loc17_:int = CModule.malloc(4);
          var _loc18_:int = loaderDanmu.getAdVerificationData(_loc11_.time,_loc17_);
          var _loc19_:int = CModule.read32(_loc17_);
-         $.asTojs("room_data_getdid",CModule.readString(_loc19_,_loc18_));
+         //$.asTojs("room_data_getdid",CModule.readString(_loc19_,_loc18_));
          loaderDanmu.danmakuFreeData(_loc17_);
          CModule.free(_loc17_);
          var _loc20_:int = CModule.malloc(4);
          var _loc21_:int = loaderDanmu.danmakuGetLoginRoomData(_loc12_,_loc20_);
          var _loc22_:int = CModule.read32(_loc20_);
          var _loc23_:String = CModule.readString(_loc22_,_loc21_);
-         $.jscall("console.log","urlgreq is [%s]",_loc23_);
+         //$.jscall("console.log","urlgreq is [%s]",_loc23_);
          this._conn.sendmsg(_loc23_);
          loaderDanmu.danmakuFreeData(_loc20_);
          CModule.free(_loc20_);
@@ -196,7 +196,7 @@
             return;
          }
          this._conn.sendmsg(_loc5_.Get_SttString());
-         $.jscall("console.log","versionreq is [%s]",_loc5_.Get_SttString());
+         //$.jscall("console.log","versionreq is [%s]",_loc5_.Get_SttString());
       }
       
       public function anotherUserLogin(param1:String) : void
@@ -215,7 +215,7 @@
          }
          var _loc5_:String = HMAC.hash(this.randomValue.toString(),_loc2_);
          _loc3_.AddItem("password",_loc5_);
-         $.jscall("console.log","req is ");
+         //$.jscall("console.log","req is ");
          if(this._conn == null)
          {
             return;
@@ -225,7 +225,7 @@
       
       public function UserLogout() : void
       {
-         $.jscall("console.log","urlo[%s]",1111);
+         //$.jscall("console.log","urlo[%s]",1111);
          var _loc1_:Encode = new Encode();
          _loc1_.AddItem("type","logout");
          var _loc2_:String = _loc1_.Get_SttString();
@@ -242,7 +242,7 @@
          var _loc9_:String = null;
          var _loc10_:Encode = null;
          var _loc11_:String = null;
-         $.jscall("console.log","jscc[%s]",param1);
+         //$.jscall("console.log","jscc[%s]",param1);
          var _loc2_:Decode = new Decode();
          _loc2_.Parse(param1);
          var _loc3_:int = _loc2_.GetItemAsInt("sender");
@@ -259,14 +259,14 @@
             _loc8_.AddItem("scope",_loc6_);
             _loc8_.AddItem_int("col",_loc7_);
             _loc9_ = _loc8_.Get_SttString();
-            $.jscall("console.log","scc[%s]",_loc9_);
+            //$.jscall("console.log","scc[%s]",_loc9_);
             if(this._conn == null)
             {
                return;
             }
             if(this.my_uid == 4257531)
             {
-               $.jscall("console.log","4257531 sendmsgtime=………………" + new Date().time / 1000);
+               //$.jscall("console.log","4257531 sendmsgtime=………………" + new Date().time / 1000);
             }
             this.sendTime = new Date().time;
             this._conn.sendmsg(_loc9_);
@@ -277,8 +277,8 @@
             _loc10_.AddItem("type","error");
             _loc10_.AddItem_int("code",60);
             _loc11_ = _loc10_.Get_SttString();
-            $.jscall("console.log","server_error [%s]",_loc11_);
-            $.asTojs("room_data_sererr",_loc11_);
+            //$.jscall("console.log","server_error [%s]",_loc11_);
+            //$.asTojs("room_data_sererr",_loc11_);
          }
       }
       
@@ -310,7 +310,7 @@
             this._conn.sendmsg(CModule.readString(_loc9_,_loc8_));
             loaderDanmu.danmakuFreeData(_loc7_);
             CModule.free(_loc7_);
-            $.jscall("console.log","time=" + getTimer());
+            //$.jscall("console.log","time=" + getTimer());
          }
       }
       
@@ -351,7 +351,7 @@
          {
             return;
          }
-         $.jscall("console.log","js_BlackUser [%s]",param1);
+         //$.jscall("console.log","js_BlackUser [%s]",param1);
          var _loc2_:Decode = new Decode();
          _loc2_.Parse(param1);
          var _loc3_:int = _loc2_.GetItemAsInt("userid");
@@ -409,7 +409,7 @@
       public function MyBlackList(param1:String) : void
       {
          this.myblacklist = param1.split("|");
-         $.jscall("console.log","handIn_blacklist [%s]",param1);
+         //$.jscall("console.log","handIn_blacklist [%s]",param1);
       }
       
       public function givePresent(param1:String) : void
@@ -428,7 +428,7 @@
          _loc5_.AddItem_int("ms",_loc4_);
          var _loc6_:String = _loc5_.Get_SttString();
          this._conn.sendmsg(_loc6_);
-         $.jscall("console.log","赠送鱼丸请求");
+         //$.jscall("console.log","赠送鱼丸请求");
       }
       
       public function giveGift(param1:String) : void
@@ -453,7 +453,7 @@
          this._conn.sendmsg(CModule.readString(_loc10_,_loc9_));
          loaderDanmu.danmakuFreeData(_loc8_);
          CModule.free(_loc8_);
-         $.jscall("console.log","zsgreq");
+         //$.jscall("console.log","zsgreq");
       }
       
       public function queryTask() : void
@@ -466,7 +466,7 @@
          _loc1_.AddItem("type","qtlq");
          var _loc2_:String = _loc1_.Get_SttString();
          this._conn.sendmsg(_loc2_);
-         $.jscall("console.log","qtq2");
+         //$.jscall("console.log","qtq2");
       }
       
       public function queryTaskNum() : void
@@ -479,7 +479,7 @@
          _loc1_.AddItem("type","qtlnq");
          var _loc2_:String = _loc1_.Get_SttString();
          this._conn.sendmsg(_loc2_);
-         $.jscall("console.log","qtq1");
+         //$.jscall("console.log","qtq1");
       }
       
       public function obtainTask(param1:String) : void
@@ -496,7 +496,7 @@
          _loc4_.AddItem_int("tid",_loc3_);
          var _loc5_:String = _loc4_.Get_SttString();
          this._conn.sendmsg(_loc5_);
-         $.jscall("console.log","领取任务请求");
+         //$.jscall("console.log","领取任务请求");
       }
       
       public function setKeytitles(param1:String) : void
@@ -520,7 +520,7 @@
          _loc7_.AddItem("limittime",_loc6_);
          var _loc8_:String = _loc7_.Get_SttString();
          this._conn.sendmsg(_loc8_);
-         $.jscall("console.log","keytitle =userid" + _loc3_ + "   uname=" + _loc4_ + "  reason=" + _loc5_ + " roomId=" + this.roomId);
+         //$.jscall("console.log","keytitle =userid" + _loc3_ + "   uname=" + _loc4_ + "  reason=" + _loc5_ + " roomId=" + this.roomId);
       }
       
       public function setReportBarrage(param1:String) : void
@@ -564,7 +564,7 @@
          this._conn.sendmsg(CModule.readString(_loc5_,_loc4_));
          loaderDanmu.danmakuFreeData(_loc3_);
          CModule.free(_loc3_);
-         $.jscall("console.log","酬勤榜单请求");
+         //$.jscall("console.log","酬勤榜单请求");
       }
       
       public function emailNotifyResponse(param1:String) : void
@@ -581,7 +581,7 @@
          _loc4_.AddItem("mid",_loc3_);
          var _loc5_:String = _loc4_.Get_SttString();
          this._conn.sendmsg(_loc5_);
-         $.jscall("console.log","私信回执 ");
+         //$.jscall("console.log","私信回执 ");
       }
       
       public function queryGiftPkg(param1:String) : void
@@ -591,7 +591,7 @@
             return;
          }
          this._conn.sendmsg(param1);
-         $.jscall("console.log","查询礼包信息 =" + param1);
+         //$.jscall("console.log","查询礼包信息 =" + param1);
       }
       
       public function dmodelNotify(param1:int) : void
@@ -605,7 +605,7 @@
          _loc2_.AddItem_int("op",param1);
          var _loc3_:String = _loc2_.Get_SttString();
          this._conn.sendmsg(_loc3_);
-         $.jscall("console.log","dmcnotify");
+         //$.jscall("console.log","dmcnotify");
       }
       
       public function superDanmuClickReq(param1:Object) : void
@@ -625,7 +625,7 @@
          _loc2_.AddItem("did",_loc3_);
          var _loc4_:String = _loc2_.Get_SttString();
          this._conn.sendmsg(_loc4_);
-         $.jscall("console.log","sdmcount");
+         //$.jscall("console.log","sdmcount");
       }
       
       public function jsSuperDanmuClickReq(param1:String) : void
@@ -652,7 +652,7 @@
          _loc8_.AddItem("did",_loc9_);
          var _loc10_:String = _loc8_.Get_SttString();
          this._conn.sendmsg(_loc10_);
-         $.jscall("console.log","sdmcount1");
+         //$.jscall("console.log","sdmcount1");
       }
       
       public function hbRequest(param1:String) : void
@@ -662,7 +662,7 @@
             return;
          }
          this._conn.sendmsg(param1);
-         $.jscall("console.log","hbq：" + param1);
+         //$.jscall("console.log","hbq：" + param1);
       }
       
       public function roomSignUp() : void
@@ -675,7 +675,7 @@
          _loc1_.AddItem("type","signinq");
          var _loc2_:String = _loc1_.Get_SttString();
          this._conn.sendmsg(_loc2_);
-         $.jscall("console.log","房间签到请求");
+         //$.jscall("console.log","房间签到请求");
       }
       
       public function shareSuccess(param1:Number) : void
@@ -691,7 +691,7 @@
          _loc2_.AddItem("nickname",this.my_nickname);
          _loc2_.AddItem_int("exp",param1);
          this._conn.sendmsg(_loc2_.Get_SttString());
-         $.jscall("console.log","share request");
+         //$.jscall("console.log","share request");
       }
       
       private function ParseMsg(param1:TcpEvent) : void
@@ -704,7 +704,7 @@
          var _loc4_:String = _loc3_.GetItem("type");
          if(_loc4_ != "keeplive" && _loc4_ != "chatmessage" && _loc4_ != "chatmsg")
          {
-            $.jscall("console.log","网络数据 [%s]",_loc2_);
+            //$.jscall("console.log","网络数据 [%s]",_loc2_);
          }
          if(_loc4_ == "loginres")
          {
@@ -947,19 +947,19 @@
          {
             if(Param.IS_HOSTLIVE == 1 || Param.usergroupid == "5")
             {
-               $.jscall("console.log","ServerShowStatus0 =" + 0);
+               //$.jscall("console.log","ServerShowStatus0 =" + 0);
                this.dispatcher.dispatchEvent(new Event("ServerShowStatus"));
-               $.asTojs("room_bus_clswatchtip");
+               //$.asTojs("room_bus_clswatchtip");
             }
             else
             {
                clearTimeout(this.end2TimeIndex);
                randTime = int(Math.random() * 30);
-               $.jscall("console.log","ServerShowStatus0 =" + randTime);
+               //$.jscall("console.log","ServerShowStatus0 =" + randTime);
                this.end2TimeIndex = setTimeout(function():void
                {
                   dispatcher.dispatchEvent(new Event("ServerShowStatus"));
-                  $.asTojs("room_bus_clswatchtip");
+                  //$.asTojs("room_bus_clswatchtip");
                },randTime * 1000);
             }
          }
@@ -1000,14 +1000,14 @@
          _strencode.AddItem_int("npv",npv);
          _strencode.AddItem("bdg",bdg);
          var loginres:String = _strencode.Get_SttString();
-         $.jscall("console.log","isYouke =" + GlobalData.isYouke + "   live_stat =" + live_stat + "   roomgroup =" + roomgroup + " npv =" + npv + "&& return_tourist",loginres);
+         //$.jscall("console.log","isYouke =" + GlobalData.isYouke + "   live_stat =" + live_stat + "   roomgroup =" + roomgroup + " npv =" + npv + "&& return_tourist",loginres);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_login",loginres);
+            //$.asTojs("room_data_login",loginres);
          }
          else
          {
-            $.asTojs("room_data_login",str);
+            //$.asTojs("room_data_login",str);
          }
          if(this.myTimer == null)
          {
@@ -1050,7 +1050,7 @@
             this._conn.sendmsg(CModule.readString(_loc5_,_loc4_));
             loaderDanmu.danmakuFreeData(_loc3_);
             CModule.free(_loc3_);
-            $.jscall("console.log","在线宝箱请求 ");
+            //$.jscall("console.log","在线宝箱请求 ");
          }
       }
       
@@ -1065,7 +1065,7 @@
          _loc1_.AddItem("link",GlobalData.domainName);
          var _loc2_:String = _loc1_.Get_SttString();
          this._conn.sendmsg(_loc2_);
-         $.jscall("console.log","ifrq ");
+         //$.jscall("console.log","ifrq ");
       }
       
       private function ServerUserInfoContent(param1:Decode) : void
@@ -1155,7 +1155,7 @@
             {
                _loc27_.AddItem("chatmsgid",_loc12_);
                _loc28_ = _loc27_.Get_SttString();
-               $.asTojs("room_data_chatpri",_loc28_);
+               //$.asTojs("room_data_chatpri",_loc28_);
             }
             else
             {
@@ -1173,7 +1173,7 @@
                _loc27_.AddItem_int("naat",_loc25_);
                _loc27_.AddItem_int("nrt",_loc26_);
                _loc29_ = _loc27_.Get_SttString();
-               $.asTojs("room_data_chat",_loc29_);
+               //$.asTojs("room_data_chat",_loc29_);
                if(this.myblacklist.indexOf(_loc4_.toString()) == -1)
                {
                   _loc30_ = Util.facereplace(_loc6_);
@@ -1223,23 +1223,23 @@
             {
                _loc35_.AddItem_int("sender",_loc4_);
             }
-            $.asTojs("room_data_chat",_loc35_.Get_SttString());
+            //$.asTojs("room_data_chat",_loc35_.Get_SttString());
          }
          else if(_loc2_ == 2)
          {
-            $.asTojs("room_data_sys","您已被禁言");
+            //$.asTojs("room_data_sys","您已被禁言");
          }
          else if(_loc2_ == 5)
          {
-            $.asTojs("room_data_sys","全站禁言");
+            //$.asTojs("room_data_sys","全站禁言");
          }
          else if(_loc2_ == 208)
          {
-            $.asTojs("room_data_sys","目标用户未找到");
+            //$.asTojs("room_data_sys","目标用户未找到");
          }
          else if(_loc2_ == 206)
          {
-            $.asTojs("room_data_per","平民5及以下等级用户禁止私聊，赶紧升级吧~");
+            //$.asTojs("room_data_per","平民5及以下等级用户禁止私聊，赶紧升级吧~");
          }
       }
       
@@ -1289,7 +1289,7 @@
                }
             }
          }
-         $.asTojs("room_data_chat2",param1);
+         //$.asTojs("room_data_chat2",param1);
       }
       
       private function newChatRes(param1:String) : void
@@ -1308,7 +1308,7 @@
          var _loc3_:int = _loc2_.GetItemAsInt("len");
          var _loc4_:int = _loc2_.GetItemAsInt("res");
          GlobalData.chatMaxChars = _loc3_;
-         $.asTojs("room_data_chat2",param1);
+         //$.asTojs("room_data_chat2",param1);
          if(_loc4_ == 356 || _loc4_ == 288)
          {
             _loc5_ = _loc2_.GetItemAsInt("uid");
@@ -1362,7 +1362,7 @@
          this.keep_online = this.keep_online + this.per_keep_live;
          this.user_count = param1.GetItemAsInt("uc");
          Param.currentNum = this.user_count;
-         $.asTojs("room_data_userc",this.user_count);
+         //$.asTojs("room_data_userc",this.user_count);
          if(Param.isYinghun)
          {
             EventCenter.dispatch("TitleBarDataEvent",{"uc":this.user_count});
@@ -1388,14 +1388,14 @@
             _loc8_.AddItem("adnick",_loc7_);
          }
          var _loc9_:String = _loc8_.Get_SttString();
-         $.jscall("console.log","setadm： [%s]",param1);
+         //$.jscall("console.log","setadm： [%s]",param1);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_setadm",_loc9_);
+            //$.asTojs("room_data_setadm",_loc9_);
          }
          else
          {
-            $.asTojs("room_data_setadm",param1);
+            //$.asTojs("room_data_setadm",param1);
          }
       }
       
@@ -1438,21 +1438,21 @@
             }
             if(this.my_uid == _loc3_)
             {
-               $.jscall("console.log","forbidTip:",_loc8_);
-               $.asTojs("room_data_per",_loc8_);
+               //$.jscall("console.log","forbidTip:",_loc8_);
+               //$.asTojs("room_data_per",_loc8_);
                if(_loc4_ == 1 && _loc4_ == 3)
                {
                   this.clean_conn_timer();
                }
             }
-            $.asTojs("room_data_sys",_loc9_);
+            //$.asTojs("room_data_sys",_loc9_);
          }
          else
          {
             _loc10_ = new Encode();
             _loc10_.AddItem_int("rescode",_loc2_);
             _loc11_ = _loc10_.Get_SttString();
-            $.asTojs("room_data_admfail",_loc11_);
+            //$.asTojs("room_data_admfail",_loc11_);
          }
       }
       
@@ -1461,7 +1461,7 @@
          this.serialnum = param1.GetItemAsInt("serialnum");
          this.user_count = param1.GetItemAsInt("c");
          Param.currentNum = this.user_count;
-         $.asTojs("room_data_userc",this.user_count);
+         //$.asTojs("room_data_userc",this.user_count);
       }
       
       private function ServerError(param1:Decode) : void
@@ -1475,18 +1475,18 @@
          _strencode.AddItem("type","error");
          _strencode.AddItem_int("code",code);
          var server_error_str:String = _strencode.Get_SttString();
-         $.jscall("console.log","server_error [%s]",server_error_str);
+         //$.jscall("console.log","server_error [%s]",server_error_str);
          if(code == 205)
          {
-            $.asTojs("room_data_sererr",server_error_str);
+            //$.asTojs("room_data_sererr",server_error_str);
             EventCenter.dispatch("login",{"code":1});
          }
          if(code == 52)
          {
             if(Param.IS_HOSTLIVE == 1 || Param.usergroupid == "5")
             {
-               $.jscall("console.log","ServerShowStatus0 =" + 1);
-               $.asTojs("room_data_sererr",this.endError);
+               //$.jscall("console.log","ServerShowStatus0 =" + 1);
+               //$.asTojs("room_data_sererr",this.endError);
                this.dispatcher.dispatchEvent(new Event("ServerShowStatus"));
             }
             else
@@ -1494,16 +1494,16 @@
                this.endError = server_error_str;
                clearTimeout(this.endTimeIndex0);
                randTime = int(Math.random() * 30);
-               $.jscall("console.log","ServerShowStatus0 =" + randTime);
+               //$.jscall("console.log","ServerShowStatus0 =" + randTime);
                this.endTimeIndex0 = setTimeout(function():void
                {
-                  $.asTojs("room_data_sererr",endError);
+                  //$.asTojs("room_data_sererr",endError);
                   dispatcher.dispatchEvent(new Event("ServerShowStatus"));
                },randTime * 1000);
             }
          }
-         $.asTojs("room_data_flaerr",code);
-         $.jscall("console.log","flash error : ");
+         //$.asTojs("room_data_flaerr",code);
+         //$.jscall("console.log","flash error : ");
       }
       
       private function ServerRepeaterlist(param1:Decode) : void
@@ -1577,14 +1577,14 @@
          _loc9_.AddItem("sn",_loc6_);
          _loc9_.AddItem("c",_loc7_);
          _loc9_.AddItem("url",_loc8_);
-         $.jscall("console.log","sysbroad:",_loc9_.Get_SttString());
+         //$.jscall("console.log","sysbroad:",_loc9_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_brocast",_loc9_.Get_SttString());
+            //$.asTojs("room_data_brocast",_loc9_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_brocast",param1);
+            //$.asTojs("room_data_brocast",param1);
          }
       }
       
@@ -1617,11 +1617,11 @@
          _loc14_.AddItem("type","donateres");
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_gift",_loc14_.Get_SttString());
+            //$.asTojs("room_data_gift",_loc14_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_gift",param1);
+            //$.asTojs("room_data_gift",param1);
          }
          if(Param.isYinghun)
          {
@@ -1636,14 +1636,14 @@
          var _loc3_:String = _loc2_.GetItem("list");
          var _loc4_:Encode = new Encode();
          _loc4_.AddItem("list",_loc3_);
-         $.jscall("console.log","tkss:",_loc4_.Get_SttString());
+         //$.jscall("console.log","tkss:",_loc4_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_tasklis",_loc4_.Get_SttString());
+            //$.asTojs("room_data_tasklis",_loc4_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_tasklis",param1);
+            //$.asTojs("room_data_tasklis",param1);
          }
       }
       
@@ -1654,14 +1654,14 @@
          var _loc3_:int = _loc2_.GetItemAsInt("ps");
          var _loc4_:Encode = new Encode();
          _loc4_.AddItem_int("ps",_loc3_);
-         $.jscall("console.log","tkn:",_loc4_.Get_SttString());
+         //$.jscall("console.log","tkn:",_loc4_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_taskcou",_loc4_.Get_SttString());
+            //$.asTojs("room_data_taskcou",_loc4_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_taskcou",param1);
+            //$.asTojs("room_data_taskcou",param1);
          }
       }
       
@@ -1682,14 +1682,14 @@
          _loc9_.AddItem_int("ms",_loc6_);
          _loc9_.AddItem_int("gb",_loc7_);
          _loc9_.AddItem_int("sb",_loc8_);
-         $.jscall("console.log","rtkr:",_loc9_.Get_SttString());
+         //$.jscall("console.log","rtkr:",_loc9_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_taskrec",_loc9_.Get_SttString());
+            //$.asTojs("room_data_taskrec",_loc9_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_taskrec",param1);
+            //$.asTojs("room_data_taskrec",param1);
          }
       }
       
@@ -1702,14 +1702,14 @@
          var _loc5_:Encode = new Encode();
          _loc5_.AddItem_int("r",_loc3_);
          _loc5_.AddItem_int("sc",_loc4_);
-         $.jscall("console.log","rsignr:",_loc5_.Get_SttString());
+         //$.jscall("console.log","rsignr:",_loc5_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_tasksign",_loc5_.Get_SttString());
+            //$.asTojs("room_data_tasksign",_loc5_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_tasksign",param1);
+            //$.asTojs("room_data_tasksign",param1);
          }
       }
       
@@ -1722,8 +1722,8 @@
          _loc5_.AddItem_int("lev",_loc2_);
          _loc5_.AddItem_int("lack_time",_loc3_);
          _loc5_.AddItem_int("dl",_loc4_);
-         $.jscall("console.log","onlineTreasurer:",_loc5_.Get_SttString());
-         $.asTojs("room_data_chest",_loc5_.Get_SttString());
+         //$.jscall("console.log","onlineTreasurer:",_loc5_.Get_SttString());
+         //$.asTojs("room_data_chest",_loc5_.Get_SttString());
       }
       
       private function keyTitlesRes(param1:String) : void
@@ -1737,14 +1737,14 @@
          _loc6_.AddItem("uname",_loc4_);
          _loc6_.AddItem_int("ret",_loc5_);
          _loc6_.AddItem_int("uid",_loc3_);
-         $.jscall("console.log","keytitler:",_loc6_.Get_SttString());
+         //$.jscall("console.log","keytitler:",_loc6_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_onekeyacc",_loc6_.Get_SttString());
+            //$.asTojs("room_data_onekeyacc",_loc6_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_onekeyacc",param1);
+            //$.asTojs("room_data_onekeyacc",param1);
          }
       }
       
@@ -1770,11 +1770,11 @@
          _strencode.AddItem_int("strength",strength);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_balance",_strencode.Get_SttString());
+            //$.asTojs("room_data_balance",_strencode.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_balance",str);
+            //$.asTojs("room_data_balance",str);
          }
       }
       
@@ -1787,14 +1787,14 @@
          var _loc5_:Encode = new Encode();
          _loc5_.AddItem_int("cd",_loc3_);
          _loc5_.AddItem_int("maxl",_loc4_);
-         $.jscall("console.log","limitchatr:",_loc5_.Get_SttString());
+         //$.jscall("console.log","limitchatr:",_loc5_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_chatcd",_loc5_.Get_SttString());
+            //$.asTojs("room_data_chatcd",_loc5_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_chatcd",param1);
+            //$.asTojs("room_data_chatcd",param1);
          }
       }
       
@@ -1809,13 +1809,13 @@
          _loc5_.AddItem("param",_loc4_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_bus_comcall",_loc5_.Get_SttString());
+            //$.asTojs("room_bus_comcall",_loc5_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_bus_comcall",param1);
+            //$.asTojs("room_bus_comcall",param1);
          }
-         $.jscall("console.log","common_call1：",_loc5_.Get_SttString());
+         //$.jscall("console.log","common_call1：",_loc5_.Get_SttString());
       }
       
       private function reportBarrage(param1:String) : void
@@ -1827,13 +1827,13 @@
          _loc4_.AddItem_int("state",_loc3_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_chatrep",_loc4_.Get_SttString());
+            //$.asTojs("room_data_chatrep",_loc4_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_chatrep",param1);
+            //$.asTojs("room_data_chatrep",param1);
          }
-         $.jscall("console.log","return_chatreport：",_loc4_.Get_SttString());
+         //$.jscall("console.log","return_chatreport：",_loc4_.Get_SttString());
       }
       
       private function identityChange(param1:Decode) : void
@@ -1843,7 +1843,7 @@
          var _loc4_:int = param1.GetItemAsInt("rid");
          GlobalData.rg = _loc3_;
          EventCenter.dispatch("userRGEvent",null);
-         $.jscall("console.log","identityChange");
+         //$.jscall("console.log","identityChange");
       }
       
       private function rewardListResponse(param1:String) : void
@@ -1859,13 +1859,13 @@
          _loc6_.AddItem("list_all",_loc5_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_cqrank",_loc6_.Get_SttString());
+            //$.asTojs("room_data_cqrank",_loc6_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_cqrank",param1);
+            //$.asTojs("room_data_cqrank",param1);
          }
-         $.jscall("console.log","return_rewardList：",_loc6_.Get_SttString());
+         //$.jscall("console.log","return_rewardList：",_loc6_.Get_SttString());
       }
       
       private function emailNotify(param1:String) : void
@@ -1883,13 +1883,13 @@
          _loc7_.AddItem_int("unread",_loc6_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_letter",_loc7_.Get_SttString());
+            //$.asTojs("room_data_letter",_loc7_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_letter",param1);
+            //$.asTojs("room_data_letter",param1);
          }
-         $.jscall("console.log","return_emailNotify：",_loc7_.Get_SttString());
+         //$.jscall("console.log","return_emailNotify：",_loc7_.Get_SttString());
       }
       
       private function updateYC(param1:String) : void
@@ -1901,13 +1901,13 @@
          _loc4_.AddItem_int("b",_loc3_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_ycchange",_loc4_.Get_SttString());
+            //$.asTojs("room_data_ycchange",_loc4_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_ycchange",param1);
+            //$.asTojs("room_data_ycchange",param1);
          }
-         $.jscall("console.log","updateyc：",_loc4_.Get_SttString());
+         //$.jscall("console.log","updateyc：",_loc4_.Get_SttString());
       }
       
       private function roomInfoRes(param1:String) : void
@@ -1928,8 +1928,8 @@
                "fl":_loc6_
             });
          }
-         $.asTojs("room_data_info",param1);
-         $.jscall("console.log","show_obj.info_showr：",param1);
+         //$.asTojs("room_data_info",param1);
+         //$.jscall("console.log","show_obj.info_showr：",param1);
          var _loc3_:String = _loc2_.GetItem("tvt");
          if(_loc3_ != "")
          {
@@ -1939,14 +1939,14 @@
       
       private function giftPkgRes(param1:String) : void
       {
-         $.asTojs("room_data_chestquery",param1);
-         $.jscall("console.log","query_gift_pkg_info：",param1);
+         //$.asTojs("room_data_chestquery",param1);
+         //$.jscall("console.log","query_gift_pkg_info：",param1);
       }
       
       private function giveFishBallres(param1:String) : void
       {
-         $.asTojs("room_data_giftbat1",param1);
-         $.jscall("console.log","live_gift_batter1：",param1);
+         //$.asTojs("room_data_giftbat1",param1);
+         //$.jscall("console.log","live_gift_batter1：",param1);
       }
       
       private function reloadStreamNotify() : void
@@ -1959,32 +1959,32 @@
       private function verResponse(param1:Decode) : void
       {
          var _loc2_:int = param1.GetItemAsInt("v");
-         $.asTojs("room_bus_login2",0);
+         //$.asTojs("room_bus_login2",0);
       }
       
       private function randomStrResponse(param1:Decode) : void
       {
          this.randomValue = param1.GetItemAsInt("r");
          this.salt = param1.GetItem("s");
-         $.asTojs("loginBranch",1);
+         //$.asTojs("loginBranch",1);
       }
       
       private function expUpdate(param1:String) : void
       {
-         $.asTojs("room_data_expchange",param1);
-         $.jscall("console.log","exprienceupdate:",param1);
+         //$.asTojs("room_data_expchange",param1);
+         //$.jscall("console.log","exprienceupdate:",param1);
       }
       
       private function gapNotify(param1:String) : void
       {
-         $.asTojs("room_data_rankgap",param1);
-         $.jscall("console.log","rankgapnotify：",param1);
+         //$.asTojs("room_data_rankgap",param1);
+         //$.jscall("console.log","rankgapnotify：",param1);
       }
       
       private function initChatLimit(param1:String) : void
       {
-         $.asTojs("room_data_chatinit",param1);
-         $.jscall("console.log","newuserchatlimit：",param1);
+         //$.asTojs("room_data_chatinit",param1);
+         //$.jscall("console.log","newuserchatlimit：",param1);
       }
       
       private function hbGetResponse(param1:String) : void
@@ -1995,23 +1995,23 @@
          switch(_loc3_)
          {
             case 0:
-               $.asTojs("room_data_giftbat1",param1);
-               $.jscall("console.log","live_gift_batter4：",param1);
+               //$.asTojs("room_data_giftbat1",param1);
+               //$.jscall("console.log","live_gift_batter4：",param1);
                break;
             case 1:
-               $.jscall("treeReply",param1);
-               $.jscall("console.log","treeReply gateway: ",param1);
+               //$.jscall("treeReply",param1);
+               //$.jscall("console.log","treeReply gateway: ",param1);
                break;
             case 2:
-               $.asTojs("room_data_beastrep",param1);
-               $.jscall("console.log","beastReply gateway : ",param1);
+               //$.asTojs("room_data_beastrep",param1);
+               //$.jscall("console.log","beastReply gateway : ",param1);
                break;
             case 3:
-               $.asTojs("room_data_sabonusget",param1);
-               $.jscall("console.log","beastReply gateway : ",param1);
+               //$.asTojs("room_data_sabonusget",param1);
+               //$.jscall("console.log","beastReply gateway : ",param1);
                break;
             default:
-               $.jscall("console.log","unknown rpt type : ",_loc3_);
+               //$.jscall("console.log","unknown rpt type : ",_loc3_);
          }
       }
       
@@ -2051,7 +2051,7 @@
                   EventCenter.dispatch("TicketStreamNotify");
                }
                EventCenter.dispatch("ChangeRateNotifyEvent",{"type":0});
-               $.jscall("console.log","gw ticket notify!");
+               //$.jscall("console.log","gw ticket notify!");
             },int(Math.random() * 5000));
          }
          else if(rt == 2)
@@ -2060,9 +2060,9 @@
          }
          else if(Param.IS_HOSTLIVE == 1 || Param.usergroupid == "5")
          {
-            $.jscall("console.log","ServerShowStatus1 =" + 2);
-            $.jscall("console.log","nsStatechange:",this.endStr);
-            $.asTojs("room_data_state",this.endStr);
+            //$.jscall("console.log","ServerShowStatus1 =" + 2);
+            //$.jscall("console.log","nsStatechange:",this.endStr);
+            //$.asTojs("room_data_state",this.endStr);
             this.dispatcher.dispatchEvent(new Event("ServerShowStatus"));
             EventCenter.dispatch("hostGoBack");
          }
@@ -2070,11 +2070,11 @@
          {
             clearTimeout(this.endTimeIndex);
             randTime = int(Math.random() * 30);
-            $.jscall("console.log","ServerShowStatus1 =" + randTime);
+            //$.jscall("console.log","ServerShowStatus1 =" + randTime);
             this.endTimeIndex = setTimeout(function():void
             {
-               $.jscall("console.log","nsStatechange:",endStr);
-               $.asTojs("room_data_state",endStr);
+               //$.jscall("console.log","nsStatechange:",endStr);
+               //$.asTojs("room_data_state",endStr);
                dispatcher.dispatchEvent(new Event("ServerShowStatus"));
                EventCenter.dispatch("hostGoBack");
             },randTime * 1000);
@@ -2216,12 +2216,12 @@
       
       private function christmasTree(param1:String) : void
       {
-         $.jscall("treeReceived",param1);
+         //$.jscall("treeReceived",param1);
       }
       
       private function beastReceived(param1:String) : void
       {
-         $.asTojs("room_data_beastrec",param1);
+         //$.asTojs("room_data_beastrec",param1);
       }
       
       private function petInfo(param1:String) : void
@@ -2238,13 +2238,13 @@
                this.beastReceived(param1);
                break;
             default:
-               $.jscall("console.log","unknown pt type: ",_loc3_);
+               //$.jscall("console.log","unknown pt type: ",_loc3_);
          }
       }
       
       private function petReceived(param1:String) : void
       {
-         $.asTojs("room_data_petrec",param1);
+         //$.asTojs("room_data_petrec",param1);
       }
       
       private function alipayblackres(param1:Decode) : void
@@ -2260,19 +2260,19 @@
          {
             _loc4_ = "禁言支付宝用户失败";
          }
-         $.jscall("console.log","alipayblackres:",_loc4_);
+         //$.jscall("console.log","alipayblackres:",_loc4_);
       }
       
       private function room_data_sys(param1:String) : void
       {
-         $.asTojs("room_data_sys",param1);
-         $.jscall("console.log","gw room_data_sys:",param1);
+         //$.asTojs("room_data_sys",param1);
+         //$.jscall("console.log","gw room_data_sys:",param1);
       }
       
       private function room_data_giftbat1(param1:String) : void
       {
-         $.asTojs("room_data_giftbat1",param1);
-         $.jscall("console.log","gw room_data_giftbat1:",param1);
+         //$.asTojs("room_data_giftbat1",param1);
+         //$.jscall("console.log","gw room_data_giftbat1:",param1);
       }
    }
 }

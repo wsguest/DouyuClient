@@ -49,7 +49,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.SendByteCount is null!");
+            //$.jscall("console.log","Error! [%s]","client.SendByteCount is null!");
          }
       }
       
@@ -65,7 +65,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.SendEmptyOrFullCount is null!");
+            //$.jscall("console.log","Error! [%s]","client.SendEmptyOrFullCount is null!");
          }
       }
       
@@ -119,7 +119,7 @@ package cc.dy.model.net
       private function UserNoHandle(param1:* = null) : void
       {
          EventCenter.dispatch("UserNoHandleEvent");
-         $.jscall("console.log","前端来消息UserNoHandleEvent");
+         //$.jscall("console.log","前端来消息UserNoHandleEvent");
       }
       
       private function UserHaveHandle() : void
@@ -134,7 +134,7 @@ package cc.dy.model.net
             this._client.UserLogout();
             this._client.dispatcher.removeEventListener("ServerShowStatus",this.__ShowStatus);
             this._client = null;
-            $.jscall("console.log","Error! [%s]","MyNewUser client  is not null!");
+            //$.jscall("console.log","Error! [%s]","MyNewUser client  is not null!");
          }
          if(this.fristConnect)
          {
@@ -144,17 +144,17 @@ package cc.dy.model.net
          this._client = new cc.dy.model.net.Client();
          this._client.ConnectServer(Param.ServerIp,Param.ServerPort,this.flashProt,this.OnConn);
          this._client.dispatcher.addEventListener("ServerShowStatus",this.__ShowStatus);
-         $.jscall("console.log","server [%s]:[%s]",Param.ServerIp,Param.ServerPort);
-         $.jscall("console.log","newUserclient[%s]","");
+         //$.jscall("console.log","server [%s]:[%s]",Param.ServerIp,Param.ServerPort);
+         //$.jscall("console.log","newUserclient[%s]","");
       }
       
       private function __recodeFirst() : void
       {
-         var _loc1_:int = 0;
+         var seconds:int = 0;
          if(this.firstTimeOut)
          {
-            _loc1_ = new Date().time / 1000;
-            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_FIRST_LOGIN_,_loc1_,{"id":Param.ServerIp + ":" + Param.ServerPort});
+            seconds = new Date().time / 1000;
+            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_FIRST_LOGIN_,seconds,{"id":Param.ServerIp + ":" + Param.ServerPort});
          }
       }
       
@@ -175,9 +175,9 @@ package cc.dy.model.net
       
       private function OnConn(param1:TcpEvent) : void
       {
-         var _loc2_:int = 0;
+         var port:int = 0;
          this.firstTimeOut = false;
-         $.jscall("console.log","string is [%s]","OnConn");
+         //$.jscall("console.log","string is [%s]","OnConn");
          if(param1._param.type == 1)
          {
             GlobalData.isSecurError1 = false;
@@ -186,8 +186,8 @@ package cc.dy.model.net
          else if(param1._param.type == 3)
          {
             GlobalData.isSecurError1 = true;
-            _loc2_ = param1._param.port;
-            this.flashProt = _loc2_ == 843?844:843;
+            port = param1._param.port;
+            this.flashProt = port == 843?844:843;
             if(this.firstRepeatConnect)
             {
                this.firstRepeatConnect = false;
@@ -203,14 +203,14 @@ package cc.dy.model.net
       
       private function CheckOnline() : void
       {
-         var _loc1_:int = 0;
+         var seconds:int = 0;
          if(!this._client._conn || !this._client._conn.is_connected)
          {
-            $.jscall("console.log","berakOut Connection");
+            //$.jscall("console.log","berakOut Connection");
             this.MyNewUser();
             this.countNet++;
-            _loc1_ = new Date().time / 1000;
-            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_SERVER_FAIL_,_loc1_,{
+            seconds = new Date().time / 1000;
+            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_SERVER_FAIL_,seconds,{
                "id":Param.ServerIp + ":" + Param.ServerPort,
                "lag":this.countNet
             });
@@ -225,7 +225,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.UserLogin is null!");
+            //$.jscall("console.log","Error! [%s]","client.UserLogin is null!");
          }
       }
       
@@ -237,7 +237,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.UserLogin is null!");
+            //$.jscall("console.log","Error! [%s]","client.UserLogin is null!");
          }
       }
       
@@ -249,20 +249,20 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.UserLogin is null!");
+            //$.jscall("console.log","Error! [%s]","client.UserLogin is null!");
          }
       }
       
       private function MySendChatContent(param1:String) : void
       {
-         $.jscall("console.log","ChatMsg [%s]",param1);
+         //$.jscall("console.log","ChatMsg [%s]",param1);
          if(this._client != null)
          {
             this._client.SendChatContent(param1);
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.SendChatContent is null!");
+            //$.jscall("console.log","Error! [%s]","client.SendChatContent is null!");
          }
       }
       
@@ -275,7 +275,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.Logout is null!");
+            //$.jscall("console.log","Error! [%s]","client.Logout is null!");
          }
       }
       
@@ -287,7 +287,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.BlackUser is null!");
+            //$.jscall("console.log","Error! [%s]","client.BlackUser is null!");
          }
       }
       
@@ -299,7 +299,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.SetAdmin is null!");
+            //$.jscall("console.log","Error! [%s]","client.SetAdmin is null!");
          }
       }
       
@@ -309,7 +309,7 @@ package cc.dy.model.net
       
       private function DisplayCommentLayer(param1:Boolean) : void
       {
-         $.jscall("console.log","damuState [%s]",param1);
+         //$.jscall("console.log","damuState [%s]",param1);
          facade.sendNotification(Order.Comment_OpenHide_Request,{"status":param1});
       }
       
@@ -321,7 +321,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","client.MyBlackList is null!");
+            //$.jscall("console.log","Error! [%s]","client.MyBlackList is null!");
          }
       }
       
@@ -337,7 +337,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","givePresent failed!!");
+            //$.jscall("console.log","Error! [%s]","givePresent failed!!");
          }
       }
       
@@ -349,7 +349,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","givePresent failed!!");
+            //$.jscall("console.log","Error! [%s]","givePresent failed!!");
          }
       }
       
@@ -361,7 +361,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","queryTask failed!!");
+            //$.jscall("console.log","Error! [%s]","queryTask failed!!");
          }
       }
       
@@ -373,7 +373,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","queryTask failed!!");
+            //$.jscall("console.log","Error! [%s]","queryTask failed!!");
          }
       }
       
@@ -385,7 +385,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","obtainTask failed!!");
+            //$.jscall("console.log","Error! [%s]","obtainTask failed!!");
          }
       }
       
@@ -397,7 +397,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","onSignUp failed!!");
+            //$.jscall("console.log","Error! [%s]","onSignUp failed!!");
          }
       }
       
@@ -409,7 +409,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","keyTitles failed!!");
+            //$.jscall("console.log","Error! [%s]","keyTitles failed!!");
          }
       }
       
@@ -421,7 +421,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","reportBarrage failed!!");
+            //$.jscall("console.log","Error! [%s]","reportBarrage failed!!");
          }
       }
       
@@ -438,7 +438,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","requestRewardList failed!!");
+            //$.jscall("console.log","Error! [%s]","requestRewardList failed!!");
          }
       }
       
@@ -450,7 +450,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","emailNotifyFeedback failed!!");
+            //$.jscall("console.log","Error! [%s]","emailNotifyFeedback failed!!");
          }
       }
       
@@ -462,7 +462,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","emailNotifyFeedback failed!!");
+            //$.jscall("console.log","Error! [%s]","emailNotifyFeedback failed!!");
          }
       }
       
@@ -478,7 +478,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","superDanmuClick1 failed!!");
+            //$.jscall("console.log","Error! [%s]","superDanmuClick1 failed!!");
          }
       }
       
@@ -490,7 +490,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","hongbaoRequest failed!!");
+            //$.jscall("console.log","Error! [%s]","hongbaoRequest failed!!");
          }
       }
       
@@ -504,13 +504,13 @@ package cc.dy.model.net
       
       private function timeLoginTip() : void
       {
-         $.jscall("console.log","timetip");
+         //$.jscall("console.log","timetip");
          EventCenter.dispatch("StarttimeLoginTip");
       }
       
       private function breakRuleTip(param1:int) : void
       {
-         $.jscall("console.log","quit normal=" + param1);
+         //$.jscall("console.log","quit normal=" + param1);
          if(param1 == 1)
          {
             EventCenter.dispatch("breakRuleTipEvent");
@@ -525,7 +525,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","dmodelNotify failed!!");
+            //$.jscall("console.log","Error! [%s]","dmodelNotify failed!!");
          }
       }
       
@@ -537,7 +537,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","superDanmuClick failed!!");
+            //$.jscall("console.log","Error! [%s]","superDanmuClick failed!!");
          }
       }
       
@@ -551,7 +551,7 @@ package cc.dy.model.net
       
       private function sendHandler(param1:Array) : void
       {
-         $.jscall("console.log","sendplayerres");
+         //$.jscall("console.log","sendplayerres");
          EventCenter.dispatch("sendPlayerEvent",{"res":param1});
       }
       
@@ -571,13 +571,13 @@ package cc.dy.model.net
          }
          else
          {
-            $.jscall("console.log","Error! [%s]","share notify failed!");
+            //$.jscall("console.log","Error! [%s]","share notify failed!");
          }
       }
       
       private function js_turn_on_activity(param1:String, param2:Boolean) : void
       {
-         $.jscall("console.log","js_turn_on_activity",param1,param2);
+         //$.jscall("console.log","js_turn_on_activity",param1,param2);
          if(param1 == "666")
          {
             if(Boolean(Param.isYinghun) || Boolean(Param.isQQApp) || Boolean(Param.IsIndex) || Boolean(GlobalData.OldModel))
@@ -594,7 +594,7 @@ package cc.dy.model.net
       private function buyticketsSuccess() : void
       {
          EventCenter.dispatch("BuyticketsSuccess");
-         $.jscall("console.log","buy tickets success callback");
+         //$.jscall("console.log","buy tickets success callback");
       }
    }
 }

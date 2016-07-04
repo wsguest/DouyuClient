@@ -131,25 +131,25 @@ package cc.dy.model.net
             this._conn2.addEventListener(TcpEvent.SecurityError,this.onConn);
             this._conn2.addEventListener(TcpEvent.Error,this.onConn);
             this._conn2.addEventListener(TcpEvent.Closed,this.onConn);
-            $.jscall("console.log","dmnc");
+            //$.jscall("console.log","dmnc");
          }
       }
       
       private function __recodeFirst() : void
       {
-         var _loc1_:int = 0;
+         var seconds:int = 0;
          if(this.firstTimeOut)
          {
-            _loc1_ = new Date().time / 1000;
-            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_FIRST_LOGIN_DANMU,_loc1_,{"id":this._ip + ":" + this._port});
+            seconds = new Date().time / 1000;
+            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_FIRST_LOGIN_DANMU,seconds,{"id":this._ip + ":" + this._port});
          }
       }
       
       public function onConn(param1:TcpEvent) : void
       {
-         var _loc2_:int = 0;
+         var port:int = 0;
          this.firstTimeOut = false;
-         $.jscall("console.log","dmncr");
+         //$.jscall("console.log","dmncr");
          if(param1._param.type == 1)
          {
             GlobalData.isSecurError2 = false;
@@ -158,8 +158,8 @@ package cc.dy.model.net
          else if(param1._param.type == 3)
          {
             GlobalData.isSecurError2 = true;
-            _loc2_ = param1._param.port;
-            this.flashProt = _loc2_ == 843?844:843;
+            port = param1._param.port;
+            this.flashProt = port == 843?844:843;
             if(this.firstRepeatConnect)
             {
                this.firstRepeatConnect = false;
@@ -178,22 +178,22 @@ package cc.dy.model.net
          if(Boolean(this._conn2) && Boolean(this._conn2.is_connected))
          {
             this._conn2.close();
-            $.jscall("console.log","cutdmcn");
+            //$.jscall("console.log","cutdmcn");
          }
       }
       
       private function CheckOnline() : void
       {
-         var _loc1_:int = 0;
+         var seconds:int = 0;
          if(Boolean(this.firstConn) && Boolean(this.firstConn.is_connected))
          {
             if(!this._conn2 || !this._conn2.is_connected)
             {
-               $.jscall("console.log","cnc");
+               //$.jscall("console.log","cnc");
                this.ConnectNewServer();
                this.countNet++;
-               _loc1_ = new Date().time / 1000;
-               UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_DANMU_FAIL,_loc1_,{
+               seconds = new Date().time / 1000;
+               UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_DANMU_FAIL,seconds,{
                   "id":this.ip + ":" + this.port,
                   "lag":this.countNet
                });
@@ -208,24 +208,24 @@ package cc.dy.model.net
             return;
          }
          this.firstTime = getTimer();
-         var _loc1_:String = this.my_username;
-         var _loc2_:String = "1234567890123456";
+         var username:String = this.my_username;
+         var password:String = "1234567890123456";
          this.roomId = this.roomId;
          this._conn2.addEventListener(TcpEvent.RecvMsg,this.ParseMsg);
-         var _loc3_:Encode = new Encode();
-         _loc3_.AddItem("type","loginreq");
-         _loc3_.AddItem("username",_loc1_);
-         _loc3_.AddItem("password",_loc2_);
-         _loc3_.AddItem_int("roomid",this.roomId);
-         var _loc4_:String = _loc3_.Get_SttString();
-         var _loc5_:int = CModule.malloc(4);
-         var _loc6_:int = loaderDanmu.danmakuGetLoginMsgRepeaterData(_loc1_,_loc5_);
-         var _loc7_:int = CModule.read32(_loc5_);
+         var encoder:Encode = new Encode();
+         encoder.AddItem("type","loginreq");
+         encoder.AddItem("username",username);
+         encoder.AddItem("password",password);
+         encoder.AddItem_int("roomid",this.roomId);
+         var sttString:String = encoder.Get_SttString();
+         var pointer:int = CModule.malloc(4);
+         var _loc6_:int = loaderDanmu.danmakuGetLoginMsgRepeaterData(username,pointer);
+         var _loc7_:int = CModule.read32(pointer);
          var _loc8_:String = CModule.readString(_loc7_,_loc6_);
-         $.jscall("console.log","UserLogin [%s]",_loc8_);
+         //$.jscall("console.log","UserLogin [%s]",_loc8_);
          this._conn2.sendmsg(_loc8_);
-         loaderDanmu.danmakuFreeData(_loc5_);
-         CModule.free(_loc5_);
+         loaderDanmu.danmakuFreeData(pointer);
+         CModule.free(pointer);
       }
       
       public function UserJoinGroup() : void
@@ -234,11 +234,11 @@ package cc.dy.model.net
          {
             return;
          }
-         var _loc1_:Encode = new Encode();
-         _loc1_.AddItem("type","joingroup");
-         _loc1_.AddItem_int("rid",this.roomId);
-         _loc1_.AddItem_int("gid",this.my_gid);
-         var _loc2_:String = _loc1_.Get_SttString();
+         var encoder:Encode = new Encode();
+         encoder.AddItem("type","joingroup");
+         encoder.AddItem_int("rid",this.roomId);
+         encoder.AddItem_int("gid",this.my_gid);
+         var sttString:String = encoder.Get_SttString();
          if(this._conn2 == null)
          {
             return;
@@ -257,7 +257,7 @@ package cc.dy.model.net
          var _loc2_:String = null;
          if(this._conn2 != null)
          {
-            $.jscall("console.log","ulo");
+            //$.jscall("console.log","ulo");
             _loc1_ = new Encode();
             _loc1_.AddItem("type","logout");
             _loc2_ = _loc1_.Get_SttString();
@@ -272,15 +272,15 @@ package cc.dy.model.net
       
       public function KeepLive(param1:TimerEvent) : void
       {
-         var _loc2_:Encode = null;
-         var _loc3_:String = null;
+         var encoder:Encode = null;
+         var sttString:String = null;
          if(this._conn2 != null)
          {
-            _loc2_ = new Encode();
-            _loc2_.AddItem("type","mrkl");
-            _loc3_ = _loc2_.Get_SttString();
-            this._conn2.sendmsg(_loc3_);
-            $.jscall("console.log","time1=" + getTimer());
+            encoder = new Encode();
+            encoder.AddItem("type","mrkl");
+            sttString = encoder.Get_SttString();
+            this._conn2.sendmsg(sttString);
+            //$.jscall("console.log","time1=" + getTimer());
          }
       }
       
@@ -299,209 +299,209 @@ package cc.dy.model.net
       
       private function ParseMsg(param1:TcpEvent) : void
       {
-         var _loc2_:String = param1._param as String;
-         var _loc3_:Decode = new Decode();
-         _loc3_.Parse(_loc2_);
-         var _loc4_:String = _loc3_.GetItem("type");
-         if(_loc4_ != "keeplive" && _loc4_ != "chatmessage" && _loc4_ != "donateres" && _loc4_ != "dgn" && _loc4_ != "dgb" && _loc4_ != "chatmsg" && _loc4_ != "mrkl")
+         var sttString:String = param1._param as String;
+         var decoder:Decode = new Decode();
+         decoder.Parse(sttString);
+         var msgType:String = decoder.GetItem("type");
+         if(msgType != "keeplive" && msgType != "chatmessage" && msgType != "donateres" && msgType != "dgn" && msgType != "dgb" && msgType != "chatmsg" && msgType != "mrkl")
          {
-            $.jscall("console.log","弹幕 网络数据 [%s]",_loc2_);
+            //$.jscall("console.log","弹幕 网络数据 [%s]",_loc2_);
          }
-         if(_loc4_ == "loginres")
+         if(msgType == "loginres")
          {
-            this.ServerLoginInfo(_loc3_);
+            this.ServerLoginInfo(decoder);
          }
-         else if(_loc4_ == "chatmessage")
+         else if(msgType == "chatmessage")
          {
-            this.ServerChatContent(_loc3_);
+            this.ServerChatContent(decoder);
          }
-         else if(_loc4_ == "chatmsg")
+         else if(msgType == "chatmsg")
          {
-            this.newServerChatContent(_loc2_);
+            this.newServerChatContent(sttString);
          }
-         else if(_loc4_ == "keeplive")
+         else if(msgType == "keeplive")
          {
-            this.ServerKeepLive(_loc3_);
+            this.ServerKeepLive(decoder);
          }
-         else if(_loc4_ == "mrkl")
+         else if(msgType == "mrkl")
          {
-            this.newServerKeepLive(_loc3_);
+            this.newServerKeepLive(decoder);
          }
-         else if(_loc4_ == "error")
+         else if(msgType == "error")
          {
-            this.ServerError(_loc3_);
+            this.ServerError(decoder);
          }
-         else if(_loc4_ == "donateres")
+         else if(msgType == "donateres")
          {
-            this.fishPresent(_loc2_);
+            this.fishPresent(sttString);
          }
-         else if(_loc4_ == "setadminres")
+         else if(msgType == "setadminres")
          {
-            this.ServerSetAdmin(_loc3_);
+            this.ServerSetAdmin(decoder);
          }
-         else if(_loc4_ == "blackres")
+         else if(msgType == "blackres")
          {
-            this.ServerBlackUser(_loc3_);
+            this.ServerBlackUser(decoder);
          }
-         else if(_loc4_ == "rss")
+         else if(msgType == "rss")
          {
-            this.ServerShowStatus(_loc3_);
+            this.ServerShowStatus(decoder);
          }
-         else if(_loc4_ == "rsm")
+         else if(msgType == "rsm")
          {
-            this.systemBroadcast(_loc2_);
+            this.systemBroadcast(sttString);
          }
-         else if(_loc4_ == "userenter")
+         else if(msgType == "userenter")
          {
-            this.ServerUserEnter(_loc2_);
+            this.ServerUserEnter(sttString);
          }
-         else if(_loc4_ == "uenter")
+         else if(msgType == "uenter")
          {
-            this.newServerUserEnter(_loc2_);
+            this.newServerUserEnter(sttString);
          }
-         else if(_loc4_ == "bc_buy_deserve")
+         else if(msgType == "bc_buy_deserve")
          {
-            this.buyDeserve(_loc2_);
+            this.buyDeserve(sttString);
          }
-         else if(_loc4_ == "common_call")
+         else if(msgType == "common_call")
          {
-            this.baoxueTime(_loc2_);
+            this.baoxueTime(sttString);
          }
-         else if(_loc4_ == "ranklist")
+         else if(msgType == "ranklist")
          {
-            this.rewardListResponse(_loc2_);
+            this.rewardListResponse(sttString);
          }
-         else if(_loc4_ == "filterblackad")
+         else if(msgType == "filterblackad")
          {
-            this.maskQrCodeNotify(_loc3_);
+            this.maskQrCodeNotify(decoder);
          }
-         else if(_loc4_ == "hits_effect")
+         else if(msgType == "hits_effect")
          {
-            this.batterFxEffect(_loc2_);
+            this.batterFxEffect(sttString);
          }
-         else if(_loc4_ == "onlinegift")
+         else if(msgType == "onlinegift")
          {
-            this.onGiftNotify(_loc2_);
+            this.onGiftNotify(sttString);
          }
-         else if(_loc4_ == "spbc")
+         else if(msgType == "spbc")
          {
-            this.giftBroadcast(_loc2_);
+            this.giftBroadcast(sttString);
          }
-         else if(_loc4_ == "dgn")
+         else if(msgType == "dgn")
          {
-            this.currentRoomGiftBroadcast(_loc2_);
+            this.currentRoomGiftBroadcast(sttString);
          }
-         else if(_loc4_ == "dgb")
+         else if(msgType == "dgb")
          {
-            this.currentRoomGiftBroadcast(_loc2_);
+            this.currentRoomGiftBroadcast(sttString);
          }
-         else if(_loc4_ == "ssd")
+         else if(msgType == "ssd")
          {
-            this.superDanmuBroadcast(_loc2_);
+            this.superDanmuBroadcast(sttString);
          }
-         else if(_loc4_ == "gbbc")
+         else if(msgType == "gbbc")
          {
-            this.hbNotify(_loc2_);
+            this.hbNotify(sttString);
          }
-         else if(_loc4_ == "ggbb")
+         else if(msgType == "ggbb")
          {
-            this.hbGetNotify(_loc2_);
+            this.hbGetNotify(sttString);
          }
-         else if(_loc4_ == "gbip")
+         else if(msgType == "gbip")
          {
-            this.hbForNewuserNotify(_loc2_);
+            this.hbForNewuserNotify(sttString);
          }
-         else if(_loc4_ == "rii")
+         else if(msgType == "rii")
          {
-            this.illegalNotify(_loc2_);
+            this.illegalNotify(sttString);
          }
-         else if(_loc4_ == "rankup")
+         else if(msgType == "rankup")
          {
-            this.rankUpdate(_loc2_);
+            this.rankUpdate(sttString);
          }
-         else if(_loc4_ == "upgrade")
+         else if(msgType == "upgrade")
          {
-            this.userUpdate(_loc2_);
+            this.userUpdate(sttString);
          }
-         else if(_loc4_ == "gift_title")
+         else if(msgType == "gift_title")
          {
-            this.levelIconNotify(_loc2_);
+            this.levelIconNotify(sttString);
          }
-         else if(_loc4_ == "pet_info")
+         else if(msgType == "pet_info")
          {
-            this.christmasTree(_loc2_);
+            this.christmasTree(sttString);
          }
-         else if(_loc4_ == "cgn")
+         else if(msgType == "cgn")
          {
-            this.christmasGift(_loc2_);
+            this.christmasGift(sttString);
          }
-         else if(_loc4_ == "bcrp")
+         else if(msgType == "bcrp")
          {
-            this.petInfo(_loc2_);
+            this.petInfo(sttString);
          }
-         else if(_loc4_ == "acc")
+         else if(msgType == "acc")
          {
-            this.deductionPoints(_loc2_);
+            this.deductionPoints(sttString);
          }
-         else if(_loc4_ == "bcar")
+         else if(msgType == "bcar")
          {
-            this.nianNotify(_loc3_);
+            this.nianNotify(decoder);
          }
-         else if(_loc4_ == "ldn")
+         else if(msgType == "ldn")
          {
-            this.mobileChouJiangNotify(_loc2_);
+            this.mobileChouJiangNotify(sttString);
          }
-         else if(_loc4_ == "gbroadcast")
+         else if(msgType == "gbroadcast")
          {
-            this.gbroadcast(_loc2_);
+            this.gbroadcast(sttString);
          }
-         else if(_loc4_ == "ccrp")
+         else if(msgType == "ccrp")
          {
-            this.chaoGuanBaoXiang(_loc2_);
+            this.chaoGuanBaoXiang(sttString);
          }
-         else if(_loc4_ == "alipayblackres")
+         else if(msgType == "alipayblackres")
          {
-            this.alipayblackres(_loc3_);
+            this.alipayblackres(decoder);
          }
-         else if(_loc4_ == "newblackres")
+         else if(msgType == "newblackres")
          {
-            this.room_data_sys(_loc2_);
+            this.room_data_sys(sttString);
          }
-         else if(_loc4_ == "ntmet")
+         else if(msgType == "ntmet")
          {
-            this.room_data_sys(_loc2_);
+            this.room_data_sys(sttString);
          }
-         else if(_loc4_ == "ncrmc")
+         else if(msgType == "ncrmc")
          {
-            this.room_data_sys(_loc2_);
+            this.room_data_sys(sttString);
          }
-         else if(_loc4_ == "muteinfo")
+         else if(msgType == "muteinfo")
          {
-            this.room_data_sys(_loc2_);
+            this.room_data_sys(sttString);
          }
-         else if(_loc4_ == "gbmres")
+         else if(msgType == "gbmres")
          {
-            this.keyTitlesRes(_loc2_);
+            this.keyTitlesRes(sttString);
          }
-         else if(_loc4_ == "al")
+         else if(msgType == "al")
          {
-            this.hostleave(_loc2_);
+            this.hostleave(sttString);
          }
-         else if(_loc4_ == "ab")
+         else if(msgType == "ab")
          {
-            this.hostGoBack(_loc2_);
+            this.hostGoBack(sttString);
          }
-         else if(_loc4_ == "srres")
+         else if(msgType == "srres")
          {
-            this.shareSuccess(_loc2_);
+            this.shareSuccess(sttString);
          }
-         else if(_loc4_ == "rbce")
+         else if(msgType == "rbce")
          {
-            this.doubleHitEffect(_loc2_);
+            this.doubleHitEffect(sttString);
          }
-         else if(_loc4_ == "ntbi")
+         else if(msgType == "ntbi")
          {
-            this.ticketEnd(_loc2_);
+            this.ticketEnd(sttString);
          }
       }
       
@@ -517,15 +517,15 @@ package cc.dy.model.net
       
       private function ServerLoginInfo(param1:Decode) : void
       {
-         var _loc3_:int = 0;
-         $.jscall("console.log","dmlgsuccess");
+         var seconds:int = 0;
+         //$.jscall("console.log","dmlgsuccess");
          this.secondTime = getTimer();
          this.serverId = param1.GetItemAsInt("sid");
          var _loc2_:Number = this.secondTime - this.firstTime;
          if(_loc2_ >= 2000)
          {
-            _loc3_ = new Date().time / 1000;
-            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_DANMU,_loc3_,{
+            seconds = new Date().time / 1000;
+            UserBehaviorLog.getInstance().sendChatLog(UserBehaviorLog.POINT_ID_LOGIN_DANMU,seconds,{
                "id":this.serverId + ":" + this.port,
                "lag":_loc2_
             });
@@ -557,29 +557,29 @@ package cc.dy.model.net
       
       private function ServerChatContent(param1:Decode) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:String = null;
-         var _loc4_:String = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc9_:Number = NaN;
+         var sender:int = 0;
+         var content:String = null;
+         var snick:String = null;
+         var go:Number = NaN;
+         var ci:Number = NaN;
+         var co:Number = NaN;
+         var mi:Number = NaN;
+         var mo:Number = NaN;
          if(this.OnChatMsg != null)
          {
-            _loc2_ = param1.GetItemAsInt("sender");
-            if(_loc2_ == 4257531)
+            sender = param1.GetItemAsInt("sender");
+            if(sender == 4257531)
             {
-               _loc3_ = param1.GetItem("content");
-               _loc4_ = param1.GetItem("snick");
-               _loc5_ = param1.GetItemAsNumber("go");
-               _loc6_ = param1.GetItemAsNumber("ci");
-               _loc7_ = param1.GetItemAsNumber("co");
-               _loc8_ = param1.GetItemAsNumber("mi");
-               _loc9_ = param1.GetItemAsNumber("mo");
-               $.jscall("console.log","*****" + "  type=chatmessage" + "  sender=" + _loc2_ + "  snick=" + _loc4_ + "  content=" + _loc3_);
-               $.jscall("console.log","*********" + " go=" + _loc5_ + "  ci=" + _loc6_ + "  co=" + _loc7_ + "  mi=" + _loc8_ + "  mo=" + _loc9_);
-               $.jscall("console.log","4257531 receivemessagetime=*********" + new Date().time / 1000);
+               content = param1.GetItem("content");
+               snick = param1.GetItem("snick");
+               go = param1.GetItemAsNumber("go");
+               ci = param1.GetItemAsNumber("ci");
+               co = param1.GetItemAsNumber("co");
+               mi = param1.GetItemAsNumber("mi");
+               mo = param1.GetItemAsNumber("mo");
+               //$.jscall("console.log","*****" + "  type=chatmessage" + "  sender=" + _loc2_ + "  snick=" + _loc4_ + "  content=" + _loc3_);
+               //$.jscall("console.log","*********" + " go=" + _loc5_ + "  ci=" + _loc6_ + "  co=" + _loc7_ + "  mi=" + _loc8_ + "  mo=" + _loc9_);
+               //$.jscall("console.log","4257531 receivemessagetime=*********" + new Date().time / 1000);
             }
             if(GlobalData.rg > 1 || GlobalData.pg > 1)
             {
@@ -614,9 +614,9 @@ package cc.dy.model.net
                _loc8_ = _loc2_.GetItemAsNumber("co");
                _loc9_ = _loc2_.GetItemAsNumber("mi");
                _loc10_ = _loc2_.GetItemAsNumber("mo");
-               $.jscall("console.log","*****" + "  type=chatmessage" + "  sender=" + _loc3_ + "  snick=" + _loc5_ + "  content=" + _loc4_);
-               $.jscall("console.log","*********" + " go=" + _loc6_ + "  ci=" + _loc7_ + "  co=" + _loc8_ + "  mi=" + _loc9_ + "  mo=" + _loc10_);
-               $.jscall("console.log","4257531 receivemessagetime=*********" + new Date().time / 1000);
+               //$.jscall("console.log","*****" + "  type=chatmessage" + "  sender=" + _loc3_ + "  snick=" + _loc5_ + "  content=" + _loc4_);
+               //$.jscall("console.log","*********" + " go=" + _loc6_ + "  ci=" + _loc7_ + "  co=" + _loc8_ + "  mi=" + _loc9_ + "  mo=" + _loc10_);
+               //$.jscall("console.log","4257531 receivemessagetime=*********" + new Date().time / 1000);
             }
             if(GlobalData.rg > 1 || GlobalData.pg > 1)
             {
@@ -626,15 +626,16 @@ package cc.dy.model.net
          }
       }
       
-      private function ServerKeepLive(param1:Decode) : void
+	  // 心跳包
+      private function ServerKeepLive(decoder:Decode) : void
       {
-         var _loc2_:int = param1.GetItemAsInt("tick");
-         var _loc3_:int = param1.GetItemAsInt("usernum");
-         var _loc4_:Encode = new Encode();
-         _loc4_.AddItem("type","keeplive");
-         _loc4_.AddItem_int("tick",_loc2_);
-         _loc4_.AddItem_int("usernum",_loc3_);
-         var _loc5_:String = _loc4_.Get_SttString();
+         var tick:int = decoder.GetItemAsInt("tick");
+         var usernum:int = decoder.GetItemAsInt("usernum");
+         var encoder:Encode = new Encode();
+         encoder.AddItem("type","keeplive");
+         encoder.AddItem_int("tick",tick);
+         encoder.AddItem_int("usernum",usernum);
+         var sttString:String = encoder.Get_SttString();
          this.keep_online = this.keep_online + this.per_keep_live;
       }
       
@@ -643,13 +644,15 @@ package cc.dy.model.net
          param1.GetItemAsInt("mrkl");
       }
       
+	  // 服务器错误
       private function ServerError(param1:Decode) : void
       {
          this.clean_conn_timer();
          var _loc2_:int = param1.GetItemAsInt("code");
-         $.jscall("console.log","server_error1 [%d]",_loc2_);
+         //$.jscall("console.log","server_error1 [%d]",_loc2_);
       }
       
+	  // 礼物
       private function fishPresent(param1:String) : void
       {
          var _loc2_:Decode = new Decode();
@@ -679,14 +682,15 @@ package cc.dy.model.net
          _loc14_.AddItem("type","donateres");
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_gift",_loc14_.Get_SttString());
+            //$.asTojs("room_data_gift",_loc14_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_gift",param1);
+            //$.asTojs("room_data_gift",param1);
          }
       }
       
+	  // 设置管理员
       private function ServerSetAdmin(param1:Decode) : void
       {
          var _loc2_:int = param1.GetItemAsInt("rescode");
@@ -704,10 +708,11 @@ package cc.dy.model.net
             _loc7_.AddItem("adnick",_loc6_);
          }
          var _loc8_:String = _loc7_.Get_SttString();
-         $.jscall("console.log","setadm： [%s]",_loc8_);
-         $.asTojs("room_data_setadm",_loc8_);
+         //$.jscall("console.log","setadm： [%s]",_loc8_);
+         //$.asTojs("room_data_setadm",_loc8_);
       }
       
+	  // 禁言
       private function ServerBlackUser(param1:Decode) : void
       {
          var _loc8_:* = null;
@@ -747,21 +752,21 @@ package cc.dy.model.net
             }
             if(this.my_uid == _loc3_)
             {
-               $.jscall("console.log","forbidTip:",_loc8_);
-               $.asTojs("room_data_per",_loc8_);
+               //$.jscall("console.log","forbidTip:",_loc8_);
+               //$.asTojs("room_data_per",_loc8_);
                if(_loc4_ == 1 && _loc4_ == 3)
                {
                   this.clean_conn_timer();
                }
             }
-            $.asTojs("room_data_sys",_loc9_);
+            //$.asTojs("room_data_sys",_loc9_);
          }
          else
          {
             _loc10_ = new Encode();
             _loc10_.AddItem_int("rescode",_loc2_);
             _loc11_ = _loc10_.Get_SttString();
-            $.asTojs("room_data_admfail",_loc11_);
+            //$.asTojs("room_data_admfail",_loc11_);
          }
       }
       
@@ -796,7 +801,7 @@ package cc.dy.model.net
                   EventCenter.dispatch("TicketStreamNotify");
                }
                EventCenter.dispatch("ChangeRateNotifyEvent",{"type":0});
-               $.jscall("console.log","dm ticket notify!");
+               //$.jscall("console.log","dm ticket notify!");
             },int(Math.random() * 5000));
          }
          else if(rt == 2)
@@ -807,7 +812,7 @@ package cc.dy.model.net
          {
             clearTimeout(this.endTimeIndex);
             randTime = int(Math.random() * 30);
-            $.jscall("console.log","ServerShowStatus2 =" + randTime);
+            //$.jscall("console.log","ServerShowStatus2 =" + randTime);
             this.endTimeIndex = setTimeout(this.recommend,randTime * 1000);
          }
       }
@@ -815,8 +820,8 @@ package cc.dy.model.net
       private function recommend() : void
       {
          EventCenter.dispatch("hostGoBack");
-         $.jscall("console.log","nsStatechange:",this.endStr);
-         $.asTojs("room_data_state",this.endStr);
+         //$.jscall("console.log","nsStatechange:",this.endStr);
+         //$.asTojs("room_data_state",this.endStr);
          this.dispatcher.dispatchEvent(new Event("ServerShowStatus"));
       }
       
@@ -836,14 +841,14 @@ package cc.dy.model.net
          _loc9_.AddItem("sn",_loc6_);
          _loc9_.AddItem("c",_loc7_);
          _loc9_.AddItem("url",_loc8_);
-         $.jscall("console.log","sysbroad:",_loc9_.Get_SttString());
+         //$.jscall("console.log","sysbroad:",_loc9_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_brocast",_loc9_.Get_SttString());
+            //$.asTojs("room_data_brocast",_loc9_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_brocast",param1);
+            //$.asTojs("room_data_brocast",param1);
          }
       }
       
@@ -898,26 +903,26 @@ package cc.dy.model.net
          _loc26_.AddItem_int("naat",_loc24_);
          _loc26_.AddItem_int("nrt",_loc25_);
          var _loc27_:String = _loc26_.Get_SttString();
-         $.jscall("console.log","newuinfo： [%s]",_loc27_);
+         //$.jscall("console.log","newuinfo： [%s]",_loc27_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_nstip",_loc26_.Get_SttString());
+            //$.asTojs("room_data_nstip",_loc26_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_nstip",param1);
+            //$.asTojs("room_data_nstip",param1);
          }
       }
       
       private function newServerUserEnter(param1:String) : void
       {
-         $.jscall("console.log","newnewuinfo： [%s]",param1);
-         $.asTojs("room_data_nstip2",param1);
+         //$.jscall("console.log","newnewuinfo： [%s]",param1);
+         //$.asTojs("room_data_nstip2",param1);
       }
       
       private function buyDeserve(param1:String) : void
       {
-         $.asTojs("room_data_buycq",param1);
+         //$.asTojs("room_data_buycq",param1);
       }
       
       private function baoxueTime(param1:String) : void
@@ -931,19 +936,19 @@ package cc.dy.model.net
          _loc5_.AddItem("param",_loc4_);
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_bus_comcall",_loc5_.Get_SttString());
+            //$.asTojs("room_bus_comcall",_loc5_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_bus_comcall",param1);
+            //$.asTojs("room_bus_comcall",param1);
          }
-         $.jscall("console.log","common_call2:",_loc5_.Get_SttString());
+         //$.jscall("console.log","common_call2:",_loc5_.Get_SttString());
       }
       
       private function rewardListResponse(param1:String) : void
       {
-         $.asTojs("room_data_cqrank",param1);
-         $.jscall("console.log","return_rewardList：",param1);
+         //$.asTojs("room_data_cqrank",param1);
+         //$.jscall("console.log","return_rewardList：",param1);
       }
       
       private function maskQrCodeNotify(param1:Decode) : void
@@ -967,8 +972,8 @@ package cc.dy.model.net
       
       private function batterFxEffect(param1:String) : void
       {
-         $.asTojs("room_data_giftbat2",param1);
-         $.jscall("console.log","roomBatterFxRender：",param1);
+         //$.asTojs("room_data_giftbat2",param1);
+         //$.jscall("console.log","roomBatterFxRender：",param1);
       }
       
       private function onGiftNotify(param1:String) : void
@@ -985,8 +990,8 @@ package cc.dy.model.net
                "time":getTimer()
             });
          }
-         $.asTojs("room_data_olyw",param1);
-         $.jscall("console.log","box_obj.Luck_Burst：",param1);
+         //$.asTojs("room_data_olyw",param1);
+         //$.jscall("console.log","box_obj.Luck_Burst：",param1);
       }
       
       private function giftBroadcast(param1:String) : void
@@ -1018,7 +1023,7 @@ package cc.dy.model.net
          {
             if(_loc13_ == 1 || _loc13_ == 3)
             {
-               $.asTojs("room_data_giftbat1",param1);
+               //$.asTojs("room_data_giftbat1",param1);
                EventCenter.dispatch("GiftBroadcastEvent",{
                   "giftid":_loc10_,
                   "send":_loc3_,
@@ -1035,7 +1040,7 @@ package cc.dy.model.net
          }
          else
          {
-            $.asTojs("room_data_giftbat1",param1);
+            //$.asTojs("room_data_giftbat1",param1);
             EventCenter.dispatch("GiftBroadcastEvent",{
                "giftid":_loc10_,
                "send":_loc3_,
@@ -1049,7 +1054,7 @@ package cc.dy.model.net
                "time":getTimer()
             });
          }
-         $.jscall("console.log","live_gift_batter：",_loc14_.Get_SttString());
+         //$.jscall("console.log","live_gift_batter：",_loc14_.Get_SttString());
       }
       
       private function currentRoomGiftBroadcast(param1:String) : void
@@ -1076,13 +1081,13 @@ package cc.dy.model.net
                return;
             }
          }
-         $.asTojs("room_data_giftbat1",param1);
+         //$.asTojs("room_data_giftbat1",param1);
       }
       
       private function hbNotify(param1:String) : void
       {
-         $.asTojs("room_data_giftbat1",param1);
-         $.jscall("console.log","live_gift_batter3：",param1);
+         //$.asTojs("room_data_giftbat1",param1);
+         //$.jscall("console.log","live_gift_batter3：",param1);
       }
       
       private function hbGetNotify(param1:String) : void
@@ -1093,28 +1098,28 @@ package cc.dy.model.net
          switch(_loc3_)
          {
             case 0:
-               $.asTojs("room_data_giftbat1",param1);
-               $.jscall("console.log","live_gift_batter5 ：",param1);
+               //$.asTojs("room_data_giftbat1",param1);
+               //$.jscall("console.log","live_gift_batter5 ：",param1);
                break;
             case 1:
-               $.jscall("treeReply",param1);
+               //$.jscall("treeReply",param1);
                break;
             case 2:
-               $.asTojs("room_data_beastrep",param1);
+               //$.asTojs("room_data_beastrep",param1);
                break;
             case 3:
-               $.asTojs("room_data_sabonusget",param1);
-               $.jscall("console.log","beastReply gateway : ",param1);
+               //$.asTojs("room_data_sabonusget",param1);
+               //$.jscall("console.log","beastReply gateway : ",param1);
                break;
             default:
-               $.jscall("console.log","unknown rpt type : ",_loc3_);
+               //$.jscall("console.log","unknown rpt type : ",_loc3_);
          }
       }
       
       private function hbForNewuserNotify(param1:String) : void
       {
-         $.asTojs("room_data_giftbat1",param1);
-         $.jscall("console.log","live_gift_batter6：",param1);
+         //$.asTojs("room_data_giftbat1",param1);
+         //$.jscall("console.log","live_gift_batter6：",param1);
       }
       
       private function illegalNotify(param1:String) : void
@@ -1124,8 +1129,8 @@ package cc.dy.model.net
          var _loc3_:int = _loc2_.GetItemAsInt("ii");
          var _loc4_:Number = _loc2_.GetItemAsNumber("timestamp");
          var _loc5_:Number = _loc2_.GetItemAsNumber("now");
-         $.asTojs("room_data_illchange",param1);
-         $.jscall("console.log","illegaldt :",param1);
+         //$.asTojs("room_data_illchange",param1);
+         //$.jscall("console.log","illegaldt :",param1);
          Util.dispatchIllegal(_loc3_,_loc5_ - _loc4_);
       }
       
@@ -1150,20 +1155,20 @@ package cc.dy.model.net
                "time":getTimer()
             });
          }
-         $.asTojs("room_data_cqrankupdate",param1);
-         $.jscall("console.log","rankupdate：",param1);
+         //$.asTojs("room_data_cqrankupdate",param1);
+         //$.jscall("console.log","rankupdate：",param1);
       }
       
       private function userUpdate(param1:String) : void
       {
-         $.asTojs("room_data_ulgrow",param1);
-         $.jscall("console.log","userupdate：",param1);
+         //$.asTojs("room_data_ulgrow",param1);
+         //$.jscall("console.log","userupdate：",param1);
       }
       
       private function levelIconNotify(param1:String) : void
       {
-         $.asTojs("room_data_ulico",param1);
-         $.jscall("console.log","levelIcon：",param1);
+         //$.asTojs("room_data_ulico",param1);
+         //$.jscall("console.log","levelIcon：",param1);
       }
       
       private function superDanmuBroadcast(param1:String) : void
@@ -1190,14 +1195,14 @@ package cc.dy.model.net
             "type":3,
             "time":getTimer()
          });
-         $.jscall("console.log","superdm");
+         //$.jscall("console.log","superdm");
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_schat",_loc8_.Get_SttString());
+            //$.asTojs("room_data_schat",_loc8_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_schat",param1);
+            //$.asTojs("room_data_schat",param1);
          }
       }
       
@@ -1223,7 +1228,7 @@ package cc.dy.model.net
       
       private function christmasTree(param1:String) : void
       {
-         $.jscall("treeReceived",param1);
+         //$.jscall("treeReceived",param1);
       }
       
       private function christmasGift(param1:String) : void
@@ -1244,7 +1249,7 @@ package cc.dy.model.net
       
       private function beastReceived(param1:String) : void
       {
-         $.asTojs("room_data_beastrec",param1);
+         //$.asTojs("room_data_beastrec",param1);
       }
       
       private function petInfo(param1:String) : void
@@ -1279,14 +1284,14 @@ package cc.dy.model.net
                }
                break;
             default:
-               $.jscall("console.log","unknown pt type: ",_loc3_);
+               //$.jscall("console.log","unknown pt type: ",_loc3_);
          }
       }
       
       private function deductionPoints(param1:String) : void
       {
-         $.jscall("console.log","kfnotify");
-         $.asTojs("room_data_ancpoints",param1);
+         //$.jscall("console.log","kfnotify");
+         //$.asTojs("room_data_ancpoints",param1);
       }
       
       private function nianNotify(param1:Decode) : void
@@ -1306,8 +1311,8 @@ package cc.dy.model.net
       
       private function mobileChouJiangNotify(param1:String) : void
       {
-         $.jscall("console.log","mobilecjnotify");
-         $.asTojs("room_data_luckdrawcd",param1);
+         //$.jscall("console.log","mobilecjnotify");
+         //$.asTojs("room_data_luckdrawcd",param1);
       }
       
       private function gbroadcast(param1:String) : void
@@ -1380,13 +1385,13 @@ package cc.dy.model.net
                "time":getTimer()
             });
          }
-         $.jscall("console.log","gbroadcast");
+         //$.jscall("console.log","gbroadcast");
       }
       
       private function chaoGuanBaoXiang(param1:String) : void
       {
-         $.asTojs("room_data_sabonus",param1);
-         $.jscall("console.log","chaoGuanBaoXiang");
+         //$.asTojs("room_data_sabonus",param1);
+         //$.jscall("console.log","chaoGuanBaoXiang");
       }
       
       private function alipayblackres(param1:Decode) : void
@@ -1402,13 +1407,13 @@ package cc.dy.model.net
          {
             _loc4_ = "禁言支付宝用户失败";
          }
-         $.jscall("console.log","alipayblackres:",_loc4_);
+         //$.jscall("console.log","alipayblackres:",_loc4_);
       }
       
       private function room_data_sys(param1:String) : void
       {
-         $.asTojs("room_data_sys",param1);
-         $.jscall("console.log","barrage room_data_sys:",param1);
+         //$.asTojs("room_data_sys",param1);
+         //$.jscall("console.log","barrage room_data_sys:",param1);
       }
       
       private function keyTitlesRes(param1:String) : void
@@ -1422,21 +1427,21 @@ package cc.dy.model.net
          _loc6_.AddItem("uname",_loc4_);
          _loc6_.AddItem_int("ret",_loc5_);
          _loc6_.AddItem_int("uid",_loc3_);
-         $.jscall("console.log","keytitler:",_loc6_.Get_SttString());
+         //$.jscall("console.log","keytitler:",_loc6_.Get_SttString());
          if(GlobalData.OldModel)
          {
-            $.asTojs("room_data_onekeyacc",_loc6_.Get_SttString());
+            //$.asTojs("room_data_onekeyacc",_loc6_.Get_SttString());
          }
          else
          {
-            $.asTojs("room_data_onekeyacc",param1);
+            //$.asTojs("room_data_onekeyacc",param1);
          }
       }
       
       private function shareSuccess(param1:String) : void
       {
-         $.asTojs("room_data_wbsharesuc",param1);
-         $.jscall("console.log","share response");
+         //$.asTojs("room_data_wbsharesuc",param1);
+         //$.jscall("console.log","share response");
       }
       
       private function doubleHitEffect(param1:String) : void
@@ -1467,10 +1472,10 @@ package cc.dy.model.net
       
       private function ticketEnd(param1:String) : void
       {
-         $.asTojs("room_data_endchargelive",Param.eticket);
+         //$.asTojs("room_data_endchargelive",Param.eticket);
          EventCenter.dispatch("TipHide",{"type":1});
          EventCenter.dispatch("TicketStreamNotify",{"reset":true});
-         $.jscall("console.log","ticket time end!");
+         //$.jscall("console.log","ticket time end!");
       }
    }
 }

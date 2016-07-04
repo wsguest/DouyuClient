@@ -12,18 +12,18 @@ package cc.dy.model.net
          super();
       }
       
-      public function AddItem(param1:String, param2:String) : void
+      public function AddItem(key:String, value:String) : void
       {
-         var _loc3_:String = "";
-         _loc3_ = param1 != null?this.scan_str(param1) + "@=":"";
-         this.SttString = this.SttString + (_loc3_ + this.scan_str(param2) + "/");
+         var keyStr:String = "";
+         keyStr = key != null?this.scan_str(key) + "@=":"";
+         this.SttString = this.SttString + (keyStr + this.scan_str(value) + "/");
       }
       
-      public function AddItem_int(param1:String, param2:Number) : void
+      public function AddItem_int(key:String, value:Number) : void
       {
-         var _loc3_:String = "";
-         _loc3_ = param1 != null?this.scan_str(param1) + "@=":"";
-         this.SttString = this.SttString + (_loc3_ + this.scan_str(param2.toString()) + "/");
+         var keyStr:String = "";
+         keyStr = key != null?this.scan_str(key) + "@=":"";
+         this.SttString = this.SttString + (keyStr + this.scan_str(value.toString()) + "/");
       }
       
       public function Get_SttString() : String
@@ -31,33 +31,33 @@ package cc.dy.model.net
          return this.SttString;
       }
       
-      private function scan_str(param1:String) : String
+      private function scan_str(str:String) : String
       {
-         var _loc4_:String = null;
-         if(param1.search(SCAN_CHAR_REG) == -1)
+         var ch:String = null;
+         if(str.search(SCAN_CHAR_REG) == -1)
          {
-            return param1;
+            return str;
          }
-         var _loc2_:* = "";
-         var _loc3_:int = 0;
-         while(_loc3_ < param1.length)
+         var val:* = "";
+         var i:int = 0;
+         while(i < str.length)
          {
-            _loc4_ = param1.charAt(_loc3_);
-            if(_loc4_ == "/")
+            ch = str.charAt(i);
+            if(ch == "/")
             {
-               _loc2_ = _loc2_ + "@S";
+               val = val + "@S";
             }
-            else if(_loc4_ == "@")
+            else if(ch == "@")
             {
-               _loc2_ = _loc2_ + "@A";
+               val = val + "@A";
             }
             else
             {
-               _loc2_ = _loc2_ + _loc4_;
+               val = val + ch;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return val;
       }
    }
 
@@ -86,74 +86,74 @@ package cc.dy.model.net
          return this._rawString;
       }
       
-      public function Parse(param1:String) : void
+      public function Parse(sttString:String) : void
       {
-         var _loc7_:String = null;
-         var _loc8_:String = null;
-         if(param1.charAt(param1.length - 1) != "/")
+         var ch:String = null;
+         var chNext:String = null;
+         if(sttString.charAt(sttString.length - 1) != "/")
          {
-            param1 = param1 + "/";
+            sttString = sttString + "/";
          }
-         this._rawString = param1;
-         var _loc2_:* = "";
-         var _loc3_:String = "";
-         var _loc4_:int = param1.length;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         while(_loc6_ < _loc4_)
+         this._rawString = sttString;
+         var val:* = "";
+         var key:String = "";
+         var len:int = sttString.length;
+         var count:int = 0;
+         var i:int = 0;
+         while(i < len)
          {
-            _loc7_ = param1.charAt(_loc6_);
-            if(_loc7_ == "/")
+            ch = sttString.charAt(i);
+            if(ch == "/")
             {
-               this.sItems[_loc3_ || _loc5_] = _loc2_;
-               _loc3_ = _loc2_ = "";
-               _loc5_++;
+               this.sItems[key || count] = val;
+               key = val = "";
+               count++;
             }
-            else if(_loc7_ == "@")
+            else if(ch == "@")
             {
-               _loc6_++;
-               _loc8_ = param1.charAt(_loc6_);
-               if(_loc8_ == "=")
+               i++;
+               chNext = sttString.charAt(i);
+               if(chNext == "=")
                {
-                  _loc3_ = _loc2_;
-                  _loc2_ = "";
+                  key = val;
+                  val = "";
                }
-               else if(_loc8_ == "A")
+               else if(chNext == "A")
                {
-                  _loc2_ = _loc2_ + "@";
+                  val = val + "@";
                }
-               else if(_loc8_ == "S")
+               else if(chNext == "S")
                {
-                  _loc2_ = _loc2_ + "/";
+                  val = val + "/";
                }
             }
             else
             {
-               _loc2_ = _loc2_ + _loc7_;
+               val = val + ch;
             }
-            _loc6_++;
+            i++;
          }
-         this._count = _loc5_;
+         this._count = count;
       }
       
-      public function GetItem(param1:String) : String
+      public function GetItem(key:String) : String
       {
-         return this.sItems[param1] || "";
+         return this.sItems[key] || "";
       }
       
-      public function GetItemAsInt(param1:String) : int
+      public function GetItemAsInt(key:String) : int
       {
-         return int(this.sItems[param1]) || 0;
+         return int(this.sItems[key]) || 0;
       }
       
-      public function GetItemAsNumber(param1:String) : Number
+      public function GetItemAsNumber(key:String) : Number
       {
-         return Number(this.sItems[param1]) || Number(0);
+         return Number(this.sItems[key]) || Number(0);
       }
       
-      public function GetItemByIndex(param1:int) : String
+      public function GetItemByIndex(key:int) : String
       {
-         return this.sItems[param1] || "";
+         return this.sItems[key] || "";
       }
    }
 }
